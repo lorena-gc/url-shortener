@@ -21,7 +21,7 @@ public class UrlService {
     }
 
     private String genereteShortUrl() {
-        return "localhost:8080/" + createSequenceAleatoryChar();
+        return createSequenceAleatoryChar();
     }
 
     private String createSequenceAleatoryChar() {
@@ -37,7 +37,6 @@ public class UrlService {
     }
 
     public String getOriginalUrl(String shortUrl) {
-        String teste = urlRepository.findByShortUrl(shortUrl).getOriginalUrl();
-        return teste;
+        return urlRepository.findByShortUrl(shortUrl).getOriginalUrl();
     }
 }
