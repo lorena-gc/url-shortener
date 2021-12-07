@@ -3,8 +3,13 @@ package com.logcy.shorturl.service;
 import com.logcy.shorturl.model.Url;
 import com.logcy.shorturl.repository.UrlRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import java.util.Random;
 
 @Service
@@ -14,10 +19,8 @@ public class UrlService {
     UrlRepository urlRepository;
 
     public String createShortUrl(String originalUrl) {
-        String shortUrl = genereteShortUrl();
-        Url url = new Url(originalUrl, shortUrl);
-        urlRepository.save(url);
-        return shortUrl;
+        Url url = new Url(originalUrl, genereteShortUrl());
+        return checkAndReturnShortUrl(url);
     }
 
     private String genereteShortUrl() {
@@ -36,7 +39,37 @@ public class UrlService {
         return sequence.toString();
     }
 
+    private String checkAndReturnShortUrl(Url url) {
+        Url existingUrl = urlRepository.findByOriginalUrl(url.getOriginalUrl());
+        if( existingUrl == null){
+            urlRepository.save(url);
+            return url.getShortUrl();
+        } else {
+            return existingUrl.getShortUrl();
+        }
+    }
+
     public String getOriginalUrl(String shortUrl) {
-        return urlRepository.findByShortUrl(shortUrl).getOriginalUrl();
+        Url existingUrl = urlRepository.findByShortUrl(shortUrl);
+        if(existingUrl != null){
+            return existingUrl.getOriginalUrl();
+        }
+        return null;
+    }
+
+    public String baseUrl(HttpServletRequest request) {
+        return ServletUriComponentsBuilder.fromRequestUri(request)
+                .replacePath(null)
+                .build()
+                .toUriString();
+    }
+
+    public ResponseEntity<Void> redirect(String url){
+        String originalUrl = getOriginalUrl(url);
+        if (originalUrl != null){
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(originalUrl)).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }

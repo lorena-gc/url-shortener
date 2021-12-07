@@ -11,7 +11,7 @@ public class Url {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "originalUrl")
+    @Column(name = "originalUrl", unique = true)
     private String originalUrl;
 
     @Column(name = "shortUrl", unique = true)
