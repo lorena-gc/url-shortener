@@ -17,6 +17,9 @@ public class Url {
     @Column(name = "shortUrl", unique = true)
     private String shortUrl;
 
+    public Url() {
+    }
+
     public Url(String originalUrl, String shortUrl) {
         this.originalUrl = originalUrl;
         this.shortUrl = shortUrl;

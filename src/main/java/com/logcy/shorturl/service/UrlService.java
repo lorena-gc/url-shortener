@@ -35,4 +35,9 @@ public class UrlService {
         }
         return sequence.toString();
     }
+
+    public String getOriginalUrl(String shortUrl) {
+        String teste = urlRepository.findByShortUrl(shortUrl).getOriginalUrl();
+        return teste;
+    }
 }
