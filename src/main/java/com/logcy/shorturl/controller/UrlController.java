@@ -1,5 +1,6 @@
 package com.logcy.shorturl.controller;
 
+import com.logcy.shorturl.dto.UrlDTO;
 import com.logcy.shorturl.service.UrlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,8 @@ public class UrlController {
     UrlService urlService;
 
     @PostMapping("/url")
-    public String create(HttpServletRequest request, @RequestBody String originalUrl){
-        originalUrl = originalUrl.replace("%3A", ":")
-                .replace("%2F", "/");
-        return urlService.baseUrl(request) + "/" + urlService.createShortUrl(originalUrl);
+    public String create(HttpServletRequest request, @RequestBody UrlDTO dto){
+        return urlService.baseUrl(request) + "/" + urlService.createShortUrl(dto.getUrl());
     }
 
     @GetMapping("/{url}")
