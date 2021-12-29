@@ -15,6 +15,7 @@ public class UrlController {
 
     @PostMapping("/url")
     public String create(HttpServletRequest request, @RequestBody String originalUrl){
+        System.out.println(originalUrl);
         return urlService.baseUrl(request) + "/" + urlService.createShortUrl(originalUrl);
     }
 
